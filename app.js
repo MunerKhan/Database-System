@@ -6,6 +6,13 @@ const path = require('path');
 
 dotenv.config({path:'./.env'});
 
+/*connectng to a database
+**sensitive info stored in another file** 
+host: IP Address 
+user: database user 
+password: user password 
+database: name of database to connect to 
+*/
 const db = mysql .createConnection({
     host: process.env.DATABASE_HOST,
     user: process.env.DATABASE_USER,
@@ -15,6 +22,11 @@ const db = mysql .createConnection({
 
 const publicDirectory = path.join(__dirname,'./public');
 app.use(express.static(publicDirectory));
+
+//grabbing data from the form
+app.use(express.urlencoded({extended : false}));
+//pasres Jason bodies
+app.use(express.json());
 
 
 app.set('view engine' , 'hbs');
@@ -27,10 +39,12 @@ db.connect((error) => {
     }
 })
 
-app.get("/", (req,res) => {
- //res.send ("<h1>Home Page</h1>")
- res.render("index")
-});
+//Define routes 
+app.use('/', require('./routes/pages'));
+app.use('/auth', require ('./routes/auth'));
+app.use ('/login', require('./routes/login'));
+
+
 
 
 app.listen(5000, () => {
