@@ -3,6 +3,8 @@ const mysql = require("mysql");
 const app = express();
 const dotenv = require('dotenv');
 const path = require('path');
+const cookieParser = require("cookie-parser");
+
 
 dotenv.config({path:'./.env'});
 
@@ -23,10 +25,14 @@ const db = mysql .createConnection({
 const publicDirectory = path.join(__dirname,'./public');
 app.use(express.static(publicDirectory));
 
+
+
 //grabbing data from the form
 app.use(express.urlencoded({extended : false}));
 //pasres Jason bodies
 app.use(express.json());
+
+app.use(cookieParser());
 
 
 app.set('view engine' , 'hbs');
@@ -42,7 +48,7 @@ db.connect((error) => {
 //Define routes 
 app.use('/', require('./routes/pages'));
 app.use('/auth', require ('./routes/auth'));
-app.use ('/login', require('./routes/login'));
+app.use ('/login', require('./routes/auth'));
 
 
 
